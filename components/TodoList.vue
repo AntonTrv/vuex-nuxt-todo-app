@@ -1,10 +1,10 @@
 <template>
   <div>
     <select v-model="filter">
-      <option v-for="option in filterOptions" :value="option">{{option}}</option>
+      <option v-for="option in filterOptions" :value="option.value">{{option.name}}</option>
     </select>
     <ul>
-      <TodoItem v-for="(todo, index) in filteredTodos"
+      <TodoItem v-for="(todo, index) in filteredTodos(this.filter)"
                 :todo="todo"
                 :index="index"
                 :key="todo.id + index"
@@ -22,12 +22,14 @@
 
 <script>
   import TodoItem from "./TodoItem";
-
+  import { mapGetters } from "vuex";
   export default  {
     props: ['todos'],
     data() {
       return {
-        filterOptions: ['all', 'completed', 'not completed'],
+        filterOptions: [{name:'all', value:'all'},
+                        {name:'completed', value: true},
+                        {name: 'not completed', value: false}],
         filter: 'all'
       }
     },
@@ -35,23 +37,12 @@
       TodoItem
     },
     computed: {
-      filteredTodos() {
-        let filter
-        if (this.filter === 'all') {
-          filter = this.todos
-        }
-
-        if (this.filter === 'completed') {
-          filter = this.todos.filter(t => t.completed)
-        }
-
-        if (this.filter === 'not completed') {
-          filter = this.todos.filter(t => !t.completed)
-        }
-        return filter
-      },
+      ...mapGetters({
+        filteredTodos: 'app/getByStatus'
+      })
+      ,
       getTotal() {
-        return this.filteredTodos.length
+        return this.filteredTodos().length
       }
     }
   }

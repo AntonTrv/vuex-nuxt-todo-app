@@ -26,7 +26,6 @@ export async function apiAdd(newTodo) {
 
 export async function apiDelete(id) {
     try {
-      console.log('DELETE ID:', id)
         await apiClient.delete(`${END_POINT}/${id}`);
         return '200'
     } catch (error) {

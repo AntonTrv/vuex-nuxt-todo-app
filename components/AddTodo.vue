@@ -7,7 +7,7 @@
 
 
 <script>
-  import {apiAdd} from "../api/methods";
+  import { mapActions } from "vuex";
 
   export default {
     data() {
@@ -17,6 +17,10 @@
     },
 
     methods: {
+        ...mapActions({
+          addTodo: "app/addTodo"
+        }),
+
       submitForm() {
         if (this.title.trim()) {
           const newTodo = {
@@ -24,12 +28,10 @@
             completed: false
           }
 
-          apiAdd(newTodo).then(r => this.$store.commit('addTodo', r))
+          this.addTodo(newTodo)
           this.title = ''
         }
       },
-
-
     }
   }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <li @click.self="toggleStatus(todo)" >
     <strong>{{index + 1}}</strong>
-    <a href="#" :class="{done: todo.completed}" @click.prevent="openTodo(todo.id)" >
+    <a :class="{'done': todo.completed}" @click.prevent="openTodo(todo.id)" >
       {{todo.title}}
     </a>
     <button class="btn remove" @click.stop="removeTodo(todo.id)">&times;</button>
@@ -9,31 +9,25 @@
 </template>
 
 <script>
-  import {apiDelete, apiPatch} from "../api/methods";
-
+  import { mapActions } from "vuex";
   export default {
 
     props: {
       todo: {
         type: Object,
-        require: true
+        default: {}
       },
       index: Number
     },
 
     methods: {
-      toggleStatus(todo) {
-        apiPatch(todo).then(r =>  {
-          this.$store.commit('toggleStatus', todo)
-        })
-      },
-
-      removeTodo(id) {
-        apiDelete(id).then(r => this.$store.commit('removeTodo', id))
-      },
+      ...mapActions({
+        toggleStatus: 'app/patchTodo',
+        removeTodo: 'app/deleteTodo'
+      }),
 
       openTodo(id) {
-        this.$router.push(`/todos/${id}`)
+        this.$router.push({path: `/todos/${id}`})
       }
     }
   }

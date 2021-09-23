@@ -10,32 +10,28 @@
 <script>
   import AddTodo from "../../components/AddTodo";
   import TodoList from "../../components/TodoList";
-  import {apiGet} from "../../api/methods";
+  import {mapGetters, mapActions} from "vuex";
 
   export default {
-    data() {
-      return {
-        title: ''
-      }
-    },
     components: {
       TodoList,
       AddTodo,
     },
+
     computed: {
-      todos(){
-        return this.$store.state.todos
-      }
+      ...mapGetters({
+        todos: "app/getTodos"
+      }),
     },
-    mounted() {
-      if(this.$store.state.todos.length) {
-        return
-      }
-      apiGet().then(res => {
-        res.forEach(r => {
-          this.$store.commit("setTodos", r)
-        })
+
+    methods: {
+      ...mapActions({
+        setTodos: "app/setTodos"
       })
+    },
+
+    mounted() {
+      this.setTodos()
     },
   }
 </script>
